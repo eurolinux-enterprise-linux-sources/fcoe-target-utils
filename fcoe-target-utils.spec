@@ -4,22 +4,21 @@ Name:           fcoe-target-utils
 License:        AGPLv3
 Group:          System Environment/Libraries
 Summary:        An administration shell for FCoE storage targets
-Version:        2.0rc1.fb10
-Release:        5%{?dist}
+Version:        2.0rc1.fb16
+Release:        3%{?dist}
 URL:            https://github.com/agrover/targetcli-fb
-Source:         https://github.com/agrover/%{oname}/tarball/v%{version}
+Source:         https://github.com/downloads/agrover/%{oname}/%{oname}-%{version}.tar.gz
 Source1:        fcoe-target.init
 Patch0:         fcoe-target-utils-suggest-driverload.patch
 Patch1:         fcoe-target-utils-man-ignore-iscsi.patch
-Patch2:         fcoe-target-utils-handle-no-acl-auth.patch
-Patch3:         fcoe-target-utils-no-rdmcp.patch
-Patch4:         fcoe-target-utils-message-deprecated.patch
-Patch5:         fcoe-target-utils-no-msg-if-no-config.patch
+Patch2:         fcoe-target-utils-no-rdmcp.patch
+Patch3:         fcoe-target-utils-no-msg-if-no-config.patch
+Patch4:         fcoe-target-utils-check-if-tpglun-exists.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python-devel python-configshell epydoc
-BuildRequires:  python-rtslib >= 2.1.fb2
-Requires:       python-rtslib >= 2.1.fb2, python-configshell fcoe-utils
+BuildRequires:  python-rtslib >= 2.1.fb21
+Requires:       python-rtslib >= 2.1.fb21, python-configshell fcoe-utils
 Requires(post): chkconfig
 Requires(preun): chkconfig
 
@@ -30,13 +29,12 @@ Fiber Channel over Ethernet (FCoE) targets.
 
 
 %prep
-%setup -q -n agrover-%{oname}-8022276
+%setup -q -n %{oname}-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 
 %build
 %{__python} setup.py build
@@ -73,6 +71,19 @@ fi
 %{_mandir}/man8/targetcli.8.gz
 
 %changelog
+* Fri Dec 7 2012 Andy Grover <agrover@redhat.com> - 2.0rc1.fb16-3
+- Add patch:
+ * fcoe-target-utils-check-if-tpglun-exists.patch
+
+* Wed Aug 8 2012 Andy Grover <agrover@redhat.com> - 2.0rc1.fb16-2
+- Update rtslib version Requires to fb21
+
+* Tue Aug 7 2012 Andy Grover <agrover@redhat.com> - 2.0rc1.fb16-1
+- Update to latest upstream version
+- Remove patches:
+ * fcoe-target-utils-handle-no-acl-auth.patch
+ * fcoe-target-utils-message-deprecated.patch
+
 * Tue May 8 2012 Andy Grover <agrover@redhat.com> - 2.0rc1.fb10-5
 - Update fcoe-target.init to handle start and shutdown properly
 - Add patch fcoe-target-utils-no-msg-if-no-config.patch

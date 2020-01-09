@@ -1,0 +1,38 @@
+commit 7d79482fa29c79a7a5f4376be9433352eb7fb4b7
+Author: Andy Grover <agrover@redhat.com>
+Date:   Fri Nov 30 15:39:23 2012 -0800
+
+    check that a lun hasn't already been added to a tpg when adding
+    
+    Change name of StorageObject to 'so' so the storage_object parameter
+    doesn't get overwritten.
+    
+    Signed-off-by: Andy Grover <agrover@redhat.com>
+
+diff --git a/targetcli/ui_target.py b/targetcli/ui_target.py
+index 8d76992..7290894 100644
+--- a/targetcli/ui_target.py
++++ b/targetcli/ui_target.py
+@@ -794,14 +794,20 @@ class UILUNs(UINode):
+                                    self.shell.prefs['auto_add_mapped_luns'])
+ 
+         try:
+-            storage_object = self.get_node(storage_object).rtsnode
++            so = self.get_node(storage_object).rtsnode
+         except ValueError:
+             self.shell.log.error("Invalid storage object %s." % storage_object)
+             return
+ 
++        sos = (l.storage_object for l in self.parent.rtsnode.luns)
++        so_paths = ("/backstores/%s/%s" % (x.plugin, x.name) for x in sos)
++        if storage_object in so_paths:
++            raise ExecutionError("lun for storage object %s already exists" \
++                                     % storage_object)
++
+         if lun and lun.lower().startswith('lun'):
+             lun = lun[3:]
+-        lun_object = LUN(self.tpg, lun, storage_object)
++        lun_object = LUN(self.tpg, lun, so)
+         self.shell.log.info("Created LUN %s." % lun_object.lun)
+         ui_lun = UILUN(lun_object, self)
+ 

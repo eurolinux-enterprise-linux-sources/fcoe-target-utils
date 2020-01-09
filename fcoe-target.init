@@ -93,10 +93,7 @@ stop_configfs()
 
 unload_modules()
 {
-    errmsg=$( /sbin/rmmod target_core_pscsi 2>&1 ) || return 1
-    errmsg=$( /sbin/rmmod target_core_file 2>&1 ) || return 1
-    errmsg=$( /sbin/rmmod target_core_iblock 2>&1 ) || return 1
-    errmsg=$( /sbin/rmmod target_core_mod 2>&1 ) || return 1
+    errmsg=$( /sbin/modprobe -qra target_core_pscsi target_core_file target_core_iblock target_core_mod 2>&1 ) || return 1
 
     return 0
 }

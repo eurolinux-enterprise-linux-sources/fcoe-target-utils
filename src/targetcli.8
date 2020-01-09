@@ -1,0 +1,255 @@
+.TH targetcli 8
+.SH NAME
+.B targetcli
+.SH DESCRIPTION
+.B targetcli
+is a shell for viewing, editing, and saving the configuration of
+the kernel's target subsystem, also known as LIO. It enables the
+administrator to assign local storage resources backed by either files,
+volumes, local SCSI devices, or ramdisk, and export them to remote systems via
+network fabrics, such as iSCSI or FCoE.
+.P
+The configuration layout is tree-based, similar to a filesystem, and
+navigated in a similar manner.
+.SH USAGE
+.B targetcli
+.P
+.B targetcli [cmd]
+.P
+Invoke
+.B targetcli
+as root to enter the configuration shell, or 
+follow with a command to execute but do not enter the shell.  Use
+.B ls
+to list nodes below the current path.
+Moving
+around the tree is accomplished by the
+.B cd
+command, or by entering
+the new location directly. Objects are created using
+.BR create ,
+removed using 
+.BR delete .
+Use
+.B "help <cmd>"
+for additional usage
+information. Tab-completion is available for commands and command
+arguments.
+.P
+Configuration changes in
+targetcli are made immediately to the underlying kernel target
+configuration. Settings will not be retained across reboot unless
+.B saveconfig
+is either explicitly called, or implicitly by exiting the shell with
+the global preference
+.B auto_save_on_exit
+set to
+.BR true ,
+the default.
+.P
+.SH EXAMPLES
+To export a storage resource, 1) define a storage object using
+a backstore, then 2) export the object via a network fabric, such as
+iSCSI or FCoE.
+.SS DEFINING A STORAGE OBJECT WITHIN A BACKSTORE
+.B backstores/fileio create disk1 /disks/disk1.img 140M
+.br
+Creates a storage object named
+.I disk1
+with the given path and size.
+.B targetcli
+supports common size abbreviations like 'M', 'G', and 'T'.
+.P
+In addition to the
+.I fileio
+backstore for file-backed volumes, other backstore types include
+.I block
+for block-device-backed volumes, and
+.I pscsi
+for volumes backed by local SCSI devices.
+.I ramdisk
+backstore creates ram-based storage objects. See the built-in help
+for more details on the required parameters for each backstore type.
+.SS EXPORTING A STORAGE OBJECT VIA FCOE
+.B tcm_fc/ create 20:00:00:19:99:a8:34:bc
+.br
+Create an FCoE target with the given WWN.
+.B targetcli
+can tab-complete the WWN based on registered FCoE interfaces. If none
+are found, verify that they are properly configured and are shown in
+the output of
+.BR "fcoeadm -i" .
+.P
+.B tcm_fc/20:00:00:19:99:a8:34:bc/
+.br
+If
+.B auto_cd_after_create
+is set to false, change to the configuration node for the given
+target, equivalent to giving the command prefixed by
+.BR cd .
+.P
+.B luns/ create /backstores/fileio/disk1
+.br
+Create a new LUN for the interface, attached to a previously defined
+storage object. The storage object now shows up under the /backstores
+configuration node as
+.BR activated .
+.P
+.B acls/ create 00:99:88:77:66:55:44:33
+.br
+Create an ACL (access control list), for defining the resources each
+initiator may access. The default behavior is to auto-map existing
+LUNs to the ACL; see help for more information.
+.P
+The LUN should now be accessible via FCoE.
+.SS EXPORTING A STORAGE OBJECT VIA ISCSI
+.B iscsi/ create
+.br
+Creates an iSCSI target with a default WWN. It will also create an
+initial target portal group called
+.IR tpg1 .
+.P
+.B iqn.2003-01.org.linux-iscsi.test2.x8664:sn123456789012/tpg1/
+.br
+An example of changing to the configuration node for the given
+target's first target portal group (TPG). This is equivalent to giving
+the command prefixed by "cd". (Although more can be useful for certain
+setups, most configurations have a single TPG per target. In this
+case, configuring the TPG is equivalent to configuring the overall
+target.)
+.P
+.B portals/ create
+.br
+Add a portal, i.e. an IP address and TCP port via which the target can be
+contacted by initiators. Sane defaults are used if these are not
+specified.
+.P
+.B luns/ create /backstores/fileio/disk1
+.br
+Create a new LUN in the TPG, attached to the storage object that has
+previously been defined. The storage object now shows up under the
+/backstores configuration node as activated.
+.P
+.B acls/ create iqn.1994-05.com.redhat:4321576890
+.br
+Creates an ACL (access control list) for the given iSCSI initiator.
+.P
+.B acls/iqn.1994-05.com.redhat:4321576890 create 2 0
+.br
+Gives the initiator access to the first exported LUN (lun0), which the
+initiator will see as lun2. The default is to give the initiator
+read/write access; if read-only access was desired, an additional "1"
+argument would be added to enable write-protect. (Note: if global
+setting 
+.B auto_add_mapped_luns
+is true, this step is not necessary.)
+.P
+.B acls/iqn.1994-05.com.redhat:4321576890 set authentication=0
+.br
+Purely for example, make the LUNs in the ACL accessible without
+authentication. See below for more information on configuring authentication.
+.SH OTHER COMMANDS
+.B saveconfig
+.br
+Save the current configuration settings to a file, from which
+settings will be restored if the system is rebooted. By default, this
+will save the configuration to
+.IR /etc/target/saveconfig.json .
+.P
+This command is executed from the configuration root node.
+.P
+.B restoreconfig
+.br
+Restore target configuration from a file, the default is the file
+listed under
+.BR saveconfig .
+This will fail if there is already an established config,
+unless the
+.I clear_existing
+option is set to
+.IR true .
+.P
+This command is executed from the configuration root node.
+.P
+.B clearconfig
+.br
+Clears the entire current local configuration. The parameter
+.I confirm=true
+must also be given, as a precaution.
+.P
+This command is executed from the configuration root node.
+.P
+.B sessions [ list | detail ] [sid]
+.br
+Lists the current open sessions or a specific session, with or without details.
+.P
+This command is executed from the configuration root node.
+.P
+.B exit
+.br
+Leave the configuration shell.
+.SH SETTINGS GROUPS
+Settings are broken into groups. Individual settings are accessed by
+.B "get <group> <setting>"
+and
+.BR "set <group> <setting>=<value>" ,
+and the settings of an entire group may be displayed by
+.BR "get <group>" .
+All except for
+.I global
+are associated with a particular configuration node.
+.SS GLOBAL
+Shell-related user-specific settings are in
+.IR global ,
+and are visible from all configuration nodes. They are mostly shell
+display options, but some starting with
+.B auto_
+affect shell behavior and may merit customization. Global settings
+are saved to ~/.targetcli/ upon exit, unlike other groups.
+.SS BACKSTORE-SPECIFIC
+.B attribute
+.br
+/backstore/<type>/<name> configuration node. Contains values relating
+to the backstore and storage object.
+.P
+.SS ISCSI-SPECIFIC
+.B discovery_auth
+.br
+/iscsi configuration node. Set the normal and mutual authentication
+userid and password for discovery sessions, as well as enabling or
+disabling it. By default it is disabled -- no authentication is
+required for discovery.
+.P
+.B parameter
+.br
+/iscsi/<target_iqn>/tpgX configuration node. ISCSI-specific parameters such as
+.IR AuthMethod ,
+.IR MaxBurstLength , 
+.IR IFMarker ,
+.IR DataDigest ,
+and similar.
+.P
+.B attribute
+.br
+/iscsi/<target_iqn>/tpgX configuration node. Contains implementation-specific
+settings for the TPG, such as
+.BR authentication ,
+to enforce or disable authentication for the full-feature phase
+(i.e. non-discovery).
+.P
+.B auth
+.br
+/iscsi/<target_iqn>/tpgX/acls/<initiator_iqn> configuration node. Set the
+userid and password for full-feature phase for this ACL.
+.SH FILES
+.B /etc/target/*
+.br
+.B /var/lib/target/*
+.SH AUTHOR
+Written by Jerome Martin <jxm@risingtidesystems.com>.
+.br
+Man page written by Andy Grover <agrover@redhat.com>.
+.SH REPORTING BUGS
+Report bugs via <target-devel@vger.kernel.org>
+.br
+or <https://github.com/agrover/targetcli-fb/issues>
