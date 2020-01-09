@@ -1,0 +1,20 @@
+commit 66bdbcff42187b1bb4011a2caae1335227e0fb26
+Author: Andy Grover <agrover@redhat.com>
+Date:   Tue May 8 15:47:46 2012 -0700
+
+    No message if saveconfig.json is absent
+    
+    Signed-off-by: Andy Grover <agrover@redhat.com>
+
+diff --git a/targetcli/ui_root.py b/targetcli/ui_root.py
+index e5884b5..f0f1d34 100644
+--- a/targetcli/ui_root.py
++++ b/targetcli/ui_root.py
+@@ -81,7 +81,6 @@ class UIRoot(UINode):
+         savefile = os.path.expanduser(savefile)
+ 
+         if not os.path.isfile(savefile):
+-            self.shell.log.info("Restore file %s not found" % savefile)
+             return
+ 
+         with open(savefile, "r") as f:

@@ -1,0 +1,54 @@
+diff --git a/targetcli.8 b/targetcli.8
+index 08acc28..57a18d8 100644
+--- a/targetcli.8
++++ b/targetcli.8
+@@ -7,7 +7,7 @@ is a shell for viewing, editing, and saving the configuration of
+ the kernel's target subsystem, also known as LIO. It enables the
+ administrator to assign local storage resources backed by either files,
+ volumes, local SCSI devices, or ramdisk, and export them to remote systems via
+-network fabrics, such as iSCSI or FCoE.
++network fabrics, such as FCoE.
+ .P
+ The configuration layout is tree-based, similar to a filesystem, and
+ navigated in a similar manner.
+@@ -45,7 +45,7 @@ the default.
+ .SH EXAMPLES
+ To export a storage resource, 1) define a storage object using
+ a backstore, then 2) export the object via a network fabric, such as
+-iSCSI or FCoE.
++FCoE.
+ .SS DEFINING A STORAGE OBJECT WITHIN A BACKSTORE
+ .B backstores/fileio create disk1 /disks/disk1.img 140M
+ .br
+@@ -97,6 +97,7 @@ initiator may access. The default behavior is to auto-map existing
+ LUNs to the ACL; see help for more information.
+ .P
+ The LUN should now be accessible via FCoE.
++.ig
+ .SS EXPORTING A STORAGE OBJECT VIA ISCSI
+ .B iscsi/ create
+ .br
+@@ -143,6 +144,7 @@ is true, this step is not necessary.)
+ .br
+ Purely for example, make the LUNs in the ACL accessible without
+ authentication. See below for more information on configuring authentication.
++..
+ .SH OTHER COMMANDS
+ .B saveconfig
+ .br
+@@ -201,6 +203,7 @@ are saved to ~/.targetcli/ upon exit, unlike other groups.
+ /backstore/<type>/<name> configuration node. Contains values relating
+ to the backstore and storage object.
+ .P
++.ig
+ .SS ISCSI-SPECIFIC
+ .B discovery_auth
+ .br
+@@ -230,6 +233,7 @@ to enforce or disable authentication for the full-feature phase
+ .br
+ /iscsi/<target_iqn>/tpgX/acls/<initiator_iqn> configuration node. Set the
+ userid and password for full-feature phase for this ACL.
++..
+ .SH FILES
+ .B /etc/target/*
+ .br

@@ -1,0 +1,28 @@
+From cc9bb0cf52ba9631476f7c749fa532c2c2ff8c9d Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Thu, 19 Apr 2012 17:36:43 -0700
+Subject: [PATCH] Exception.message is deprecated
+
+use str(exception) instead.
+
+Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_node.py |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/targetcli/ui_node.py b/targetcli/ui_node.py
+index 1a4e90e..5f1a53e 100644
+--- a/targetcli/ui_node.py
++++ b/targetcli/ui_node.py
+@@ -83,7 +83,7 @@ class UINode(ConfigNode):
+             result = ConfigNode.execute_command(self, command,
+                                                 pparams, kparams)
+         except RTSLibError, msg:
+-            self.shell.log.error(msg.message)
++            self.shell.log.error(str(msg))
+         else:
+             self.shell.log.debug("Command %s succeeded." % command)
+             return result
+-- 
+1.7.1
+

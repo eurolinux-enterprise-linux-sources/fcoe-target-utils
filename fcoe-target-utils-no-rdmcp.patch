@@ -1,0 +1,27 @@
+From 23295608b79742b4f4ae28a0fb979e59d9e736fe Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Thu, 19 Apr 2012 12:57:20 -0700
+Subject: [PATCH 2/2] Remove RDMCP backstore
+
+Not supported in rhel6.
+
+Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_backstore.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/targetcli/ui_backstore.py b/targetcli/ui_backstore.py
+index 6b2ce18..a7d1a5b 100644
+--- a/targetcli/ui_backstore.py
++++ b/targetcli/ui_backstore.py
+@@ -41,7 +41,6 @@ class UIBackstores(UINode):
+     def refresh(self):
+         self._children = set([])
+         UIPSCSIBackstore(self)
+-        UIRDMCPBackstore(self)
+         UIFileIOBackstore(self)
+         UIBlockBackstore(self)
+ 
+-- 
+1.7.1
+

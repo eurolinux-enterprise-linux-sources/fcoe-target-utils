@@ -1,0 +1,15 @@
+diff --git a/scripts/targetcli b/scripts/targetcli
+index 9094e2e..53c5095 100755
+--- a/scripts/targetcli
++++ b/scripts/targetcli
+@@ -67,6 +67,10 @@ def main():
+         root_node.refresh()
+     except RTSLibError, error:
+         shell.con.display(shell.con.render_text(str(error), 'red'))
++    except OSError:
++        err_txt = "Kernel modules not loaded yet, start the fcoe-target service."
++        shell.con.display(shell.con.render_text(err_txt, 'red'))
++        sys.exit(-1)
+ 
+     if len(sys.argv) > 1:
+         shell.run_cmdline(" ".join(sys.argv[1:]))

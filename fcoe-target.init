@@ -39,14 +39,6 @@ start_configfs()
     return 0
 }
 
-apply_config()
-{
-    [ -f /etc/target/tcm_start.sh ] && . /etc/target/tcm_start.sh
-    [ -f /etc/target/tcm_start.sh ] && . /etc/target/loopback_start.sh
-    [ -f /etc/target/tcm_start.sh ] && . /etc/target/fc_start.sh
-    return 0
-}
-
 start()
 {
     echo "Starting $prog: "
@@ -72,7 +64,7 @@ start()
     fi
 
     echo -n "   Applying saved config... "
-    apply_config
+    errmsg=$( /usr/bin/targetcli restoreconfig clear_existing=true 2>&1 )
     if [ $? -eq 0 ] 
     then
 	echo "done"
@@ -101,20 +93,28 @@ stop_configfs()
 
 unload_modules()
 {
-    errmsg=$( /sbin/modprobe target_core_pscsi 2>&1 ) || return 1
-    errmsg=$( /sbin/modprobe target_core_file 2>&1 ) || return 1
-    errmsg=$( /sbin/modprobe target_core_iblock 2>&1 ) || return 1
-    errmsg=$( /sbin/modprobe target_core_mod 2>&1 ) || return 1
+    errmsg=$( /sbin/rmmod target_core_pscsi 2>&1 ) || return 1
+    errmsg=$( /sbin/rmmod target_core_file 2>&1 ) || return 1
+    errmsg=$( /sbin/rmmod target_core_iblock 2>&1 ) || return 1
+    errmsg=$( /sbin/rmmod target_core_mod 2>&1 ) || return 1
 
     return 0
 }
 
 stop()
 {
-    echo "Stopping $prog: "
+    echo -n "   Deactivating $prog... "
+    errmsg=$( /usr/bin/targetcli clearconfig confirm=true 2>&1 )
+    if [ $? -eq 0 ] 
+    then
+	echo "done"
+    else
+	echo "failed"
+	return 1
+    fi
 
     echo -n "   Unloading $prog modules... "
-    stop_ccsd
+    unload_modules
     if [ $? -eq 0 ]
     then
 	echo "done"
@@ -152,8 +152,17 @@ case "$1" in
 	fi
 	;;
     stop)
-	success "shutdown"
-	echo
+	stop
+	rtrn=$?
+	if [ $rtrn -ne 0 ] 
+	then
+	    echo $errmsg
+	    failure "failed to stop $prog"
+	    echo
+	else
+	    success "shutdown"
+	    echo
+	fi
 	;;
 
     restart)
@@ -163,7 +172,7 @@ case "$1" in
 	;;
 
     status)
-	echo "Use targetadmin to check status."
+	echo "Use targetcli to check status."
 	;;
 
     *)
