@@ -1,0 +1,22 @@
+From 9aa0518945e6465c2da8b61861a1e264b395abd9 Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Mon, 18 Jan 2016 17:31:45 -0800
+Subject: [PATCH] fix missing import
+
+---
+ targetcli/ui_backstore.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/targetcli/ui_backstore.py b/targetcli/ui_backstore.py
+index eabe144..4f58a9b 100644
+--- a/targetcli/ui_backstore.py
++++ b/targetcli/ui_backstore.py
+@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ '''
+ 
+ from ui_node import UINode, UIRTSLibNode
+-from rtslib import RTSRoot
++from rtslib import RTSRoot, RTSLibError
+ from rtslib import FileIOStorageObject, BlockStorageObject
+ from rtslib import PSCSIStorageObject, RDMCPStorageObject
+ from rtslib.utils import (get_block_type, is_disk_partition)

@@ -1,0 +1,33 @@
+From 1c1f1e04d48a811518b644742fe342fe04db3901 Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Tue, 26 Feb 2013 12:10:08 -0800
+Subject: [PATCH] Simplify tag()
+
+tag() always takes a new_tag.
+
+Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_target.py | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/targetcli/ui_target.py b/targetcli/ui_target.py
+index 42b8a10..b0d80e2 100644
+--- a/targetcli/ui_target.py
++++ b/targetcli/ui_target.py
+@@ -607,15 +607,11 @@ class UINodeACLs(UINode):
+             self.shell.log.error("'.' not permitted in tag names.")
+             return
+ 
+-        if new_tag:
+-            cur_tag_members = list(self.find_tagged(new_tag))
+-        else:
+-            cur_tag_members = []
+-
+         for na in list(self.find_tagged(wwn_or_tag)):
+             na.tag = new_tag
+ 
+             # if joining a tag, take its config
++            cur_tag_members = list(self.find_tagged(new_tag))
+             if cur_tag_members:
+                 model = cur_tag_members[0]
+ 

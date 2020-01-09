@@ -1,19 +1,17 @@
-commit 7d79482fa29c79a7a5f4376be9433352eb7fb4b7
-Author: Andy Grover <agrover@redhat.com>
-Date:   Fri Nov 30 15:39:23 2012 -0800
+From 55dffb6532f0f3f7b6500e977b71faed6acac024 Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Tue, 2 Jul 2013 14:12:07 -0700
+Subject: [PATCH] check-if-tpglun-exists
 
-    check that a lun hasn't already been added to a tpg when adding
-    
-    Change name of StorageObject to 'so' so the storage_object parameter
-    doesn't get overwritten.
-    
-    Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_target.py | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/targetcli/ui_target.py b/targetcli/ui_target.py
-index 8d76992..7290894 100644
+index 1ffc0af..9da4868 100644
 --- a/targetcli/ui_target.py
 +++ b/targetcli/ui_target.py
-@@ -794,14 +794,20 @@ class UILUNs(UINode):
+@@ -790,14 +790,20 @@ class UILUNs(UINode):
                                     self.shell.prefs['auto_add_mapped_luns'])
  
          try:

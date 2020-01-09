@@ -1,0 +1,26 @@
+From e33e27cbcf6d3f2f3bb788c13e128604c72451cc Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Fri, 2 Aug 2013 11:15:07 -0700
+Subject: [PATCH] Fix missed spot in tags conversion
+
+UINodeACL's list of rtsnodes is called 'rtsnodes', not 'rtsnode'.
+
+Reported-by: Xiaowei Li <xiaoli@redhat.com>
+Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_target.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/targetcli/ui_target.py b/targetcli/ui_target.py
+index e6cb50b..7090d68 100644
+--- a/targetcli/ui_target.py
++++ b/targetcli/ui_target.py
+@@ -879,7 +879,7 @@ class UINodeACL(UIRTSLibNode):
+             na.set_attribute(attribute, value)
+ 
+     def ui_getgroup_parameter(self, parameter):
+-        return self.rtsnode[0].get_parameter(parameter)
++        return self.rtsnodes[0].get_parameter(parameter)
+ 
+     def ui_setgroup_parameter(self, parameter, value):
+         self.assert_root()

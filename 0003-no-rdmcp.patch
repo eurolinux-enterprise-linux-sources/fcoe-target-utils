@@ -1,0 +1,21 @@
+From fb7d7bbd8c6edb81097c190a12bba39cc44671df Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Tue, 2 Jul 2013 14:11:02 -0700
+Subject: [PATCH] no-rdmcp
+
+---
+ targetcli/ui_backstore.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/targetcli/ui_backstore.py b/targetcli/ui_backstore.py
+index 8a717a9..eabe144 100644
+--- a/targetcli/ui_backstore.py
++++ b/targetcli/ui_backstore.py
+@@ -84,7 +84,6 @@ class UIBackstores(UINode):
+     def refresh(self):
+         self._children = set([])
+         UIPSCSIBackstore(self)
+-        UIRDMCPBackstore(self)
+         UIFileIOBackstore(self)
+         UIBlockBackstore(self)
+ 

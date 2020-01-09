@@ -1,16 +1,17 @@
-commit 66bdbcff42187b1bb4011a2caae1335227e0fb26
-Author: Andy Grover <agrover@redhat.com>
-Date:   Tue May 8 15:47:46 2012 -0700
+From d52b49e47e82e0fe7494608f2b8e3da62fe5b9a0 Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Tue, 2 Jul 2013 14:11:46 -0700
+Subject: [PATCH] no-msg-if-no-config
 
-    No message if saveconfig.json is absent
-    
-    Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_root.py | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/targetcli/ui_root.py b/targetcli/ui_root.py
-index e5884b5..f0f1d34 100644
+index e095286..950a13d 100644
 --- a/targetcli/ui_root.py
 +++ b/targetcli/ui_root.py
-@@ -81,7 +81,6 @@ class UIRoot(UINode):
+@@ -87,7 +87,6 @@ class UIRoot(UINode):
          savefile = os.path.expanduser(savefile)
  
          if not os.path.isfile(savefile):

@@ -1,0 +1,25 @@
+From e7d0e91f9d49f4e821626d11dc9285f05573d056 Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Tue, 4 Jun 2013 22:14:43 -0700
+Subject: [PATCH] Update 'tag' doctext
+
+Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_target.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/targetcli/ui_target.py b/targetcli/ui_target.py
+index 72601e8..d57033e 100644
+--- a/targetcli/ui_target.py
++++ b/targetcli/ui_target.py
+@@ -595,7 +595,9 @@ class UINodeACLs(UINode):
+         tag. If new_tag already exists, its new members will adopt the
+         current tag's configuration.
+ 
+-        Within a tag, the 'wwns' command shows the WWNs the tag applies to.
++        Within a tag, the 'info' command shows the WWNs the tag applies to.
++
++        Use 'untag' to remove tags.
+ 
+         NOTE: tags are only supported in kernel 3.8 and above.
+         '''

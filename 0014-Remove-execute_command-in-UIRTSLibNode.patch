@@ -1,0 +1,39 @@
+From c2c296963c5c51d5ef1d4bff927aaf2c375b1320 Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Thu, 28 Mar 2013 13:01:02 -0700
+Subject: [PATCH] Remove execute_command in UIRTSLibNode
+
+extraneous.
+
+Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_node.py | 16 ----------------
+ 1 file changed, 16 deletions(-)
+
+diff --git a/targetcli/ui_node.py b/targetcli/ui_node.py
+index 5f1a53e..d1f40b7 100644
+--- a/targetcli/ui_node.py
++++ b/targetcli/ui_node.py
+@@ -144,22 +144,6 @@ class UIRTSLibNode(UINode):
+             self.define_config_group_param(
+                 'attribute', attribute, 'string', description, writable)
+ 
+-    def execute_command(self, command, pparams=[], kparams={}):
+-        '''
+-        Overrides the parent's execute_command() to check if the underlying
+-        RTSLib object still exists before returning.
+-        '''
+-        try:
+-            self.rtsnode._check_self()
+-        except RTSLibError:
+-            self.shell.log.error("The underlying rtslib object for "
+-                                 + "%s does not exist." % self.path)
+-            root = self.get_root()
+-            root.refresh()
+-            return root
+-
+-        return UINode.execute_command(self, command, pparams, kparams)
+-
+     def ui_getgroup_attribute(self, attribute):
+         '''
+         This is the backend method for getting attributes.

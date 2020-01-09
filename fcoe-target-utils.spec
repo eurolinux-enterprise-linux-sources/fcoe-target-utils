@@ -5,15 +5,25 @@ License:        AGPLv3
 Group:          System Environment/Libraries
 Summary:        An administration shell for FCoE storage targets
 Version:        2.0rc1.fb16
-Release:        5%{?dist}
+Release:        6%{?dist}
 URL:            https://github.com/agrover/targetcli-fb
 Source:         https://github.com/downloads/agrover/%{oname}/%{oname}-%{version}.tar.gz
 Source1:        fcoe-target.init
-Patch0:         fcoe-target-utils-suggest-driverload.patch
-Patch1:         fcoe-target-utils-man-ignore-iscsi.patch
-Patch2:         fcoe-target-utils-no-rdmcp.patch
-Patch3:         fcoe-target-utils-no-msg-if-no-config.patch
-Patch4:         fcoe-target-utils-check-if-tpglun-exists.patch
+Patch0:         0001-suggest-driverload.patch
+Patch1:         0002-man-ignore-iscsi.patch
+Patch2:         0003-no-rdmcp.patch
+Patch3:         0004-no-msg-if-no-config.patch
+Patch4:         0005-check-if-tpglun-exists.patch
+Patch5:         0006-Add-tag-support.patch
+Patch6:         0007-Simplify-tag.patch
+Patch7:         0008-Fix-UINodeACL-creation.patch
+Patch8:         0009-Add-error-checking-for-tag.patch
+Patch9:         0010-Update-tag-doctext.patch
+Patch10:        0011-Fix-re-tagging.patch
+Patch11:        0012-Fix-missed-spot-in-tags-conversion.patch
+Patch12:        0013-fix-missing-import.patch
+Patch13:        0014-Remove-execute_command-in-UIRTSLibNode.patch
+Patch14:        0015-Make-info-command-return-dump-information.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 ExcludeArch:    ppc s390 s390x
@@ -36,6 +46,16 @@ Fiber Channel over Ethernet (FCoE) targets.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
 
 %build
 %{__python} setup.py build
@@ -72,6 +92,20 @@ fi
 %{_mandir}/man8/targetcli.8.gz
 
 %changelog
+* Mon Jan 18 2016 Andy Grover <agrover@redhat.com> - 2.0rc1.fb16-6
+- Add patches:
+    0006-Add-tag-support.patch
+    0007-Simplify-tag.patch
+    0008-Fix-UINodeACL-creation.patch
+    0009-Add-error-checking-for-tag.patch
+    0010-Update-tag-doctext.patch
+    0011-Fix-re-tagging.patch
+    0012-Fix-missed-spot-in-tags-conversion.patch
+    0013-fix-missing-import.patch
+    0014-Remove-execute_command-in-UIRTSLibNode.patch
+    0015-Make-info-command-return-dump-information.patch
+- Rename existing patches to match new patch names
+
 * Tue Aug 22 2013 Andy Grover <agrover@redhat.com> - 2.0rc1.fb16-5
 - exclude ppc s390 and s390x arches to fix compose
 

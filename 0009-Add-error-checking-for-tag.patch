@@ -1,0 +1,30 @@
+From 634a1ff0ace5196eccd0ed3d2a42db1a29336c53 Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Mon, 4 Mar 2013 14:59:34 -0800
+Subject: [PATCH] Add error checking for tag()
+
+Report an error if source wwn_or_tag is empty.
+
+Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_target.py | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/targetcli/ui_target.py b/targetcli/ui_target.py
+index 7a2b876..72601e8 100644
+--- a/targetcli/ui_target.py
++++ b/targetcli/ui_target.py
+@@ -607,7 +607,12 @@ class UINodeACLs(UINode):
+             self.shell.log.error("'.' not permitted in tag names.")
+             return
+ 
+-        for na in list(self.find_tagged(wwn_or_tag)):
++        src = list(self.find_tagged(wwn_or_tag))
++        if not src:
++            self.shell.log.error("wwn_or_tag %s not found." % wwn_or_tag)
++            return
++
++        for na in src:
+             na.tag = new_tag
+ 
+             # if joining a tag, take its config

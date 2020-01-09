@@ -1,8 +1,17 @@
+From 25c351de4ca5de0444357598c43a973b2c9e3531 Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Tue, 2 Jul 2013 14:16:01 -0700
+Subject: [PATCH] suggest-driverload
+
+---
+ scripts/targetcli | 3 +++
+ 1 file changed, 3 insertions(+)
+
 diff --git a/scripts/targetcli b/scripts/targetcli
-index 9094e2e..53c5095 100755
+index 3d5a34a..67ec244 100755
 --- a/scripts/targetcli
 +++ b/scripts/targetcli
-@@ -67,6 +67,9 @@ def main():
+@@ -65,6 +65,9 @@ def main():
          root_node.refresh()
      except RTSLibError, error:
          shell.con.display(shell.con.render_text(str(error), 'red'))

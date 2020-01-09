@@ -1,0 +1,22 @@
+From f3c1186a4d5960b3a505a972772ff04eac24b3af Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Mon, 18 Jan 2016 17:11:03 -0800
+Subject: [PATCH] Fix UINodeACL creation
+
+---
+ targetcli/ui_target.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/targetcli/ui_target.py b/targetcli/ui_target.py
+index b0d80e2..7a2b876 100644
+--- a/targetcli/ui_target.py
++++ b/targetcli/ui_target.py
+@@ -515,7 +515,7 @@ class UINodeACLs(UINode):
+         else:
+             self.shell.log.info("Created Node ACL for %s"
+                                 % node_acl.node_wwn)
+-            ui_node_acl = UINodeACL(node_acl, self)
++            ui_node_acl = UINodeACL(node_acl.node_wwn, self)
+ 
+         if add_mapped_luns:
+             for lun in self.tpg.luns:

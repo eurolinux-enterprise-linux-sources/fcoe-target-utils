@@ -1,0 +1,38 @@
+From 8fcf0809a91e2839129affd17b122ce260b53719 Mon Sep 17 00:00:00 2001
+From: Andy Grover <agrover@redhat.com>
+Date: Fri, 7 Jun 2013 12:13:00 -0700
+Subject: [PATCH] Fix re-tagging
+
+Make sure NodeACL (new or old) being changed isn't used as model.
+
+Signed-off-by: Andy Grover <agrover@redhat.com>
+---
+ targetcli/ui_target.py | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/targetcli/ui_target.py b/targetcli/ui_target.py
+index d57033e..e6cb50b 100644
+--- a/targetcli/ui_target.py
++++ b/targetcli/ui_target.py
+@@ -614,13 +614,18 @@ class UINodeACLs(UINode):
+             self.shell.log.error("wwn_or_tag %s not found." % wwn_or_tag)
+             return
+ 
++        old_tag_members = list(self.find_tagged(new_tag))
++
++        # handle overlap
++        src_wwns = [na.node_wwn for na in src]
++        old_tag_members = [old for old in old_tag_members if old.node_wwn not in src_wwns]
++
+         for na in src:
+             na.tag = new_tag
+ 
+             # if joining a tag, take its config
+-            cur_tag_members = list(self.find_tagged(new_tag))
+-            if cur_tag_members:
+-                model = cur_tag_members[0]
++            if old_tag_members:
++                model = old_tag_members[0]
+ 
+                 for mlun in na.mapped_luns:
+                     mlun.delete()
