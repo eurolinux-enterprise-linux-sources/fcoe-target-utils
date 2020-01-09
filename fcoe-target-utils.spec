@@ -5,7 +5,7 @@ License:        AGPLv3
 Group:          System Environment/Libraries
 Summary:        An administration shell for FCoE storage targets
 Version:        2.0rc1.fb16
-Release:        3%{?dist}
+Release:        5%{?dist}
 URL:            https://github.com/agrover/targetcli-fb
 Source:         https://github.com/downloads/agrover/%{oname}/%{oname}-%{version}.tar.gz
 Source1:        fcoe-target.init
@@ -16,6 +16,7 @@ Patch3:         fcoe-target-utils-no-msg-if-no-config.patch
 Patch4:         fcoe-target-utils-check-if-tpglun-exists.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
+ExcludeArch:    ppc s390 s390x
 BuildRequires:  python-devel python-configshell epydoc
 BuildRequires:  python-rtslib >= 2.1.fb21
 Requires:       python-rtslib >= 2.1.fb21, python-configshell fcoe-utils
@@ -71,6 +72,12 @@ fi
 %{_mandir}/man8/targetcli.8.gz
 
 %changelog
+* Tue Aug 22 2013 Andy Grover <agrover@redhat.com> - 2.0rc1.fb16-5
+- exclude ppc s390 and s390x arches to fix compose
+
+* Tue Jul 2 2013 Andy Grover <agrover@redhat.com> - 2.0rc1.fb16-4
+- Update patch suggest-driverload.patch
+
 * Fri Dec 7 2012 Andy Grover <agrover@redhat.com> - 2.0rc1.fb16-3
 - Add patch:
  * fcoe-target-utils-check-if-tpglun-exists.patch
